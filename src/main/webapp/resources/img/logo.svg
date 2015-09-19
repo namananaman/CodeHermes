@@ -1,0 +1,5 @@
+<svg class="logo" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect x="200" y="0" width="100" height="300" style="fill:#7BC8A4;opacity:0.75;" />
+  <rect x="100" y="0" width="200" height="200" style="fill:#FFC65D;opacity:0.75;" />
+  <rect x="0" y="0" width="300" height="100" style="fill:#F16745;opacity:0.75;" />
+</svg>

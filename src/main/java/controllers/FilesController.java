@@ -42,7 +42,7 @@ public class FilesController {
 	public ModelAndView LessonView(@RequestParam String file_url) throws IOException {
 		HttpClient http = HttpClients.createDefault();
 		HttpGet get = new HttpGet(file_url);
-		get.setHeader("Accept", "application/vnd.github.VERSION.raw");
+		get.setHeader("Accept", "application/vnd.github.V3.raw");
 		HttpResponse response = http.execute(get);
 		String responseText = EntityUtils.toString(response.getEntity());
 		ModelAndView mav = new ModelAndView("lesson");

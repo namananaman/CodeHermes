@@ -12,6 +12,8 @@
 
 
     <mvc:annotation-driven />
+    <mvc:resources mapping="/resources/**" location="/resources/"  
+	cache-period="31556926"/>
 	<mvc:default-servlet-handler/>
 	<context:property-placeholder location="classpath:application.properties"/>
 	
@@ -20,5 +22,5 @@
 	        <property name="prefix" value="/WEB-INF/view/"/>
 	        <property name="suffix" value=".jsp"/>
 	</bean>
-	<bean class="commentsmodel.AWSInterface" id="database.interface" c:nameOfDatabase = "questions"/>
+	<bean class="questionsmodel.AWSInterface" id="database.interface" c:nameOfDatabase = "questions"/>
 </beans>
