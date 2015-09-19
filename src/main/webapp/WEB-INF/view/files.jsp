@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<a href="https://github.com/login/oauth/authorize?client_id=b7ff8fdedd37bf22e7ac&redirect_uri=http://www.codehermes.co/auth">Login</a>
+${text}!
 </body>
 </html>
