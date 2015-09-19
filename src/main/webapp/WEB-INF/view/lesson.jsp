@@ -8,8 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<c:forEach items="${files}" var="entry">
-    <a href="/lesson?file_url=${entry.value}">${entry.key}</a><br />
-</c:forEach>
+${file}
 </body>
 </html>
