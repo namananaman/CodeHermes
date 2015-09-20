@@ -64,7 +64,7 @@ public class FileParser {
 			int endLine = endLineNumbers.get(i).intValue();
 
 			int codeStart = startLine - sumOfCommentLines;
-			sumOfCommentLines += (endLine - startLine);
+			sumOfCommentLines += (endLine - startLine) - 1;
 
 			int codeEnd = lineNumbers.size() - sumOfCommentLines;
 

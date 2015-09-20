@@ -37,7 +37,7 @@ public class InstructorController {
 		JSONArray javaFiles = new JSONArray();
 		for (int i = 0; i < files.length(); i++) {
 			JSONObject file = files.getJSONObject(i); //currently ignoring dirs with no java files
-			if (file.getString("path").endsWith(".java") || file.getString("path").equalsIgnoreCase("README.MD")) {
+			if ((file.getString("path").endsWith(".java") && file.getString("path").split("/").length < 3) || file.getString("path").equalsIgnoreCase("README.MD")) {
 				javaFiles.put(file);
 			}
 		}

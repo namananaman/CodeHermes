@@ -39,17 +39,14 @@ public class FilesController {
 	}
 
 	@RequestMapping("/lesson")
-	public String LessonView(@RequestParam String file_url) throws IOException {
+	public @ResponseBody String LessonView(@RequestParam String file_url) throws IOException {
 		HttpClient http = HttpClients.createDefault();
 		HttpGet get = new HttpGet(file_url);
 		get.setHeader("Accept", "application/vnd.github.V3.raw");
 		HttpResponse response = http.execute(get);
 		String responseText = EntityUtils.toString(response.getEntity());
-		System.out.println("Got text! " + responseText.substring(0,20));
 		ParserResult parserResult = FileParser.parseFile(responseText);
-		System.out.println("Got parserresult! ");
 		JSONObject result = new JSONObject(parserResult);
-		System.out.println("got json");
 		return result.toString();
 	}
 }
