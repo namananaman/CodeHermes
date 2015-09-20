@@ -62,6 +62,9 @@ public class AWSInterface {
 					result.put(lineNumber, questions);
 				}
 			}
+			resultSet.close();
+		    readStatement.close();
+		    conn.close();
 
 		} catch (SQLException e) {
 			throw new RuntimeException("Cannot execute query!", e);
@@ -94,11 +97,13 @@ public class AWSInterface {
 					+ "(class_name, file_name, line_number, question) "
 					+ "VALUES " + "('" + className + "','" + fileName + "',"
 					+ lineNumber + ",'" + question + "');");
-
+			writeStatement.executeBatch();
+			writeStatement.close();
+			conn.close();
 		} catch (SQLException e) {
 			throw new RuntimeException("Cannot execute query!", e);
 		}
-		return false;
+		return true;
 	}
 
 	private static void setJdbcUrl() {
