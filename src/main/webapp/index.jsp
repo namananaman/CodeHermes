@@ -93,6 +93,6 @@
 	<body>
 		<c:url value="/show" var="messageUrl" />
 		<a href="${messageUrl}">Click here to enter</a>
-		<p>Established connection to RDS. Read first two rows: <%= results %></p>
+		<p>Established connection to RDS. Read first two rows: </p> 
 	</body>
 </html>

@@ -27,13 +27,13 @@ public class StudentController {
 	@Resource(name = "database.interface")
 	private AWSInterface aws;
 	
-	@RequestMapping("/instructors/{username}/{repo}")
+	@RequestMapping("/students/{username}/{repo}")
 	public @ResponseBody ModelAndView instructorCourseView(@PathVariable("username") String username,
 			@PathVariable("repo") String repo) throws IOException {
 		return instructorLessonView(username, repo, -1);
 	}
 
-	@RequestMapping("/instructors/{username}/{repo}/{lesson_id}")
+	@RequestMapping("/students/{username}/{repo}/{lesson_id}")
 	public @ResponseBody ModelAndView instructorLessonView(@PathVariable("username") String username,
 			@PathVariable("repo") String repo, @PathVariable("lesson_id") int lessonID) throws IOException {
 		HttpClient http = HttpClients.createDefault();
