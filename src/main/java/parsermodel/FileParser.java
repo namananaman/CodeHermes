@@ -18,7 +18,7 @@ public class FileParser {
 	public static ParserResult parseFile(String file) {
 		String newFile = "";
 		Map<String, LinePair> commentsToLines = new HashMap<String, LinePair>();
-		ParserResult result = new ParserResult(commentsToLines, file);
+		ParserResult result = new ParserResult();
 		
 		ArrayList<Integer> startMatchings = getMatchings(START_COMMENT_TOKEN, file, true);
 		ArrayList<Integer> endMatchings = getMatchings(END_COMMENT_TOKEN, file, false);
@@ -76,9 +76,37 @@ public class FileParser {
 		
 		result.setCommentToLineNumbers(commentsToLines);
 		result.setNewFile(newFile);
-		return result;
+		result.setBlockComments(comments);
+		
+		return getInlineComments(result, newFile);
 	}
-
+	
+	private static ParserResult getInlineComments(ParserResult currentResult, String file) {		
+		ArrayList<String> comments = new ArrayList<String>();
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		ArrayList<Integer> newLineIndices = getMatchings("\n", file, true);
+		int indexAfterComment, indexOfNewLine;
+		int indexOfComment = file.indexOf(INLINE_COMMENT_TOKEN);
+		
+		while(indexOfComment != (-1)) {
+			indexAfterComment = indexOfComment + INLINE_COMMENT_TOKEN.length();
+			indexOfNewLine = file.substring(indexOfComment).indexOf("\n");
+			comments.add(file.substring(indexAfterComment, indexOfNewLine));
+			indices.add(Integer.valueOf(indexOfComment));
+			indexOfComment = file.indexOf(INLINE_COMMENT_TOKEN);
+		}
+		
+		ArrayList<Integer> lineNumbers = getCorrespondingLineNumbers(indices,newLineIndices);
+		currentResult.setInlineComments(comments);
+		int size = comments.size();
+		HashMap<String, Integer> inlineCommentsToLineNumbers = new HashMap<String, Integer>();
+		for(int i = 0; i < size; i++) {
+			inlineCommentsToLineNumbers.put(comments.get(i), lineNumbers.get(i));
+		}
+		currentResult.setInlineCommentToLineNumber(inlineCommentsToLineNumbers);
+		return currentResult;
+	}
+	
 	private static ArrayList<Integer> getMatchings(String matchWithToken,
 			String file, boolean isStart) {
 		ArrayList<Integer> result = new ArrayList<Integer>();
