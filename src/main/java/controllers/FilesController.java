@@ -13,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import parsermodel.FileParser;
+import parsermodel.ParserResult;
 
 @Controller
 public class FilesController {
@@ -45,7 +45,11 @@ public class FilesController {
 		get.setHeader("Accept", "application/vnd.github.V3.raw");
 		HttpResponse response = http.execute(get);
 		String responseText = EntityUtils.toString(response.getEntity());
-		JSONObject result = new JSONObject(FileParser.parseFile(responseText));
+		System.out.println("Got text! " + responseText.substring(0,20));
+		ParserResult parserResult = FileParser.parseFile(responseText);
+		System.out.println("Got parserresult! ");
+		JSONObject result = new JSONObject(parserResult);
+		System.out.println("got json");
 		return result.toString();
 	}
 }
