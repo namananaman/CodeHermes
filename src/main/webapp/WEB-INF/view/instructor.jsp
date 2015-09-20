@@ -21,7 +21,8 @@
 				<br />
 				<ul id="directory-list" class="list">
 					<script type="text/javascript">
-						$.getJSON('/files?username=${username}&repo=${repo}').then(function(response) {
+						//$.getJSON('/files?username=${username}&repo=${repo}').then(function(response) {
+							response = ${files};
 							var dirs = $('#directory-list');
 							var tree = {};
 							for (var i = 0; i < response.length; i++) {
@@ -38,13 +39,31 @@
 									tree[parts[0]] = null;
 								}
 							}
-														
+							var tree_keys = Object.keys(tree);
+							for (var i = 0; i < tree_keys.length; i++) {
+								if (tree[tree_keys[i]] === null) { //we have a file
+									dirs.append('<li class="list__caret"><a href="">' + tree_keys[i] + '</a></li>')
+								} else {
+									var dir_str = '<li class="list__caret"><a href=""> <i class="uk-icon-caret-right"></i>'
+									+ tree_keys[i] + '<ul class="list">';
+									var dir_contents = tree[tree_keys[i]];
+									for (var j = 0; j < dir_contents.length; j++) {
+										dir_str += '<li><a href="">' + dir_contents[j] + '</a></li>';
+									}
+									dir_str += '</ul></a></li>';
+									dirs.append(dir_str);
+								}
+							}	
+							//now time to get the file specified in the url
+							if (${lesson_id} === -1) { //this means that there's no specified lesson
+								
+							}
 							
-						});
+				//		});
 						
 					
 					</script>
-					<li class="list__caret"><a href="">README.md</a></li>
+					<!-- <li class="list__caret"><a href="">README.md</a></li>
 					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 1</a></li>
 					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 2</a></li>
 					<li class="list__caret"><a href=""> <i class="uk-icon-caret-right"></i> Lesson 3
@@ -54,7 +73,7 @@
 							</ul>
 					</a></li>
 					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 4</a></li>
-					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 5</a></li>
+					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 5</a></li> -->
 				</ul>
 			</div>
 			<div class="sidebar__bottom">
@@ -271,6 +290,5 @@
 	</div>
 	<script src="/resources/js/lib.min.js"></script>
 	<script src="/resources/js/main.min.js"></script>
-	${files}
 </body>
 </html>

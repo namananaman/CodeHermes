@@ -34,14 +34,15 @@ public class InstructorController {
 		String responseText = EntityUtils.toString(response.getEntity());
 		JSONObject treeData = new JSONObject(responseText);
 		JSONArray files = treeData.getJSONArray("tree");
-		Hashtable<String, String> fileURLs = new Hashtable<String, String>();
+		JSONArray javaFiles = new JSONArray();
 		for (int i = 0; i < files.length(); i++) {
-			JSONObject file = files.getJSONObject(i);
-			fileURLs.put(file.getString("path"), file.getString("url"));
+			JSONObject file = files.getJSONObject(i); //currently ignoring dirs with no java files
+			if (file.getString("path").endsWith(".java") || file.getString("path").equalsIgnoreCase("README.MD")) {
+				javaFiles.put(file);
+			}
 		}
-
 		ModelAndView mav = new ModelAndView("instructor");
-		mav.addObject("files", fileURLs);
+		mav.addObject("files", javaFiles);
 		return mav;
 	}
 
