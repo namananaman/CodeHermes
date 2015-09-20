@@ -43,6 +43,7 @@ public class InstructorController {
 		}
 		ModelAndView mav = new ModelAndView("instructor");
 		mav.addObject("files", javaFiles);
+		mav.addObject("lesson_id", lessonID);
 		return mav;
 	}
 
