@@ -48,19 +48,22 @@ public class LoginController {
 		String responseText = EntityUtils.toString(response.getEntity());
 		String token = responseText.split("&")[0].split("=")[1];
 		
+		//get description
+		
+		
+		
 		HttpGet get = new HttpGet("https://api.github.com/user/repos?visibility=public&affiliation=owner");
 		get.setHeader("Authorization", "token " + token);
 		response = http.execute(get);
 		responseText = EntityUtils.toString(response.getEntity());	
 		JSONArray json = new JSONArray(responseText);
-		Hashtable<String, String> repos = new Hashtable<String, String>();
+		JSONObject[] objs = new JSONObject[json.length()];
 		for (int i = 0; i < json.length(); i++) {
-			JSONObject repo = json.getJSONObject(i);
-			repos.put(repo.getString("name"), repo.getString("trees_url").replaceFirst("\\{.*\\}", "") + "/master?recursive=1");
+			objs[i] = json.getJSONObject(i);
 		}
 		ModelAndView mav = new ModelAndView("login");
-		mav.addObject("repos", repos);
-		mav.addObject("token", token);
+		mav.addObject("repos", objs);
+		mav.addObject("response", responseText);
 		return mav;
 	}
 }

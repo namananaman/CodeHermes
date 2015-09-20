@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,31 +12,30 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class FilesController {
 	@RequestMapping("/files")
-	public ModelAndView FilesView(@RequestParam String repo_url) throws IOException {
-		String[] params = repo_url.split("=");
-		String token = params[params.length - 1];
+	public @ResponseBody String FilesView(@RequestParam String username, @RequestParam String repo) throws IOException {
 		HttpClient http = HttpClients.createDefault();
-		HttpGet get = new HttpGet(repo_url);
+		HttpGet get = new HttpGet("https://api.github.com/repos/" + username + "/" + repo
+				+ "/git/trees/master?recursive=1");
 		HttpResponse response = http.execute(get);
-		String responseText = EntityUtils.toString(response.getEntity());	
+		String responseText = EntityUtils.toString(response.getEntity());
 		JSONObject treeData = new JSONObject(responseText);
 		JSONArray files = treeData.getJSONArray("tree");
-		Hashtable<String, String> fileURLs = new Hashtable<String, String>();
+		JSONArray javaFiles = new JSONArray();
 		for (int i = 0; i < files.length(); i++) {
-			JSONObject file = files.getJSONObject(i);
-			fileURLs.put(file.getString("path"), file.getString("url") + "&access_id=" + token);
+			JSONObject file = files.getJSONObject(i); //currently ignoring dirs with no java files
+			if (file.getString("path").endsWith(".java")) {
+				javaFiles.put(file);
+			}
 		}
-		
-		ModelAndView mav = new ModelAndView("files");
-		mav.addObject("files", fileURLs);
-		return mav;
+		return javaFiles.toString();
 	}
-	
+
 	@RequestMapping("/lesson")
 	public ModelAndView LessonView(@RequestParam String file_url) throws IOException {
 		HttpClient http = HttpClients.createDefault();

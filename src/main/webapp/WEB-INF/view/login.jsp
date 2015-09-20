@@ -23,22 +23,21 @@
 					</button>
 				</c:when>
 				<c:otherwise>
+					<div class="list__head">Repositories</div>
 					<div id="repo-list" class="container--box">
-						<div class="list__head">Repositories</div>
 						<ul class="list--line">
 							<c:forEach items="${repos}" var="entry">
-								<li class="list__icon"><a class="repo__anchor" href="/files?repo_url=${entry.value}&access_id=${token}">
-										<i class="repo__icon uk-icon-book"></i>
-										<div class="repo__name">${entry.key}</div>
-										<div class="repo__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate odio eu
-											volutpat fringilla. Morbi sit amet maximus orci. Pellentesque convallis, felis varius luctus porttitor, velit
-											mi vehicula velit, ut malesuada urna sapien vitae sem.</div>
-								</a></li>
+								<c:set var="full_name" value="full_name" />
+								<li class="list__icon"><a class="repo__anchor" href="/instructors/${entry.getString("full_name")}/"><i
+										class="repo__icon uk-icon-book"></i>
+										<div class="repo__name">${entry.getString("name")}</div>
+										<div class="repo__desc">${entry.getString("description")}</div> </a></li>
 							</c:forEach>
 						</ul>
 					</div>
 				</c:otherwise>
 			</c:choose>
+			${response}
 		</div>
 	</div>
 	<script src="/resources/js/lib.min.js"></script>
