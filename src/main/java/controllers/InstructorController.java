@@ -68,8 +68,7 @@ public class InstructorController {
 	@RequestMapping(value = "/questions", method = RequestMethod.GET)
 	public @ResponseBody String getQuestions(@RequestParam("username") String username,
 			@RequestParam("repo") String repo, @RequestParam("lesson_id") String lessonID) {
-		HashMap<Integer, ArrayList<String>> questions = dbInterface.getQuestionsAtLine(username + "/" + repo, lessonID);
-		return (new JSONObject(questions)).toString();
+		return dbInterface.getQuestionsAtLine(username + "/" + repo, lessonID).toString();
 	}
 
 }

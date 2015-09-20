@@ -41,6 +41,11 @@
 				<div class="container" id="comment-container">
 				</div>
 			</div>
+			<div id="questions-list" class="questions">
+  				<div class="list__head">Questions</div>
+  				<ul class="list--line" id="questions-ul">
+ 				</ul>
+			</div>
 		</div>
 	</div>
 	<script src="/resources/js/lib.min.js"></script>
@@ -101,7 +106,9 @@
 					i + '</div> <pre class="code__line">' +
 					'<code class="language-java">' + file_lines[i] + '</code></pre>' +
 					'<div class="dropdown" data-uk-dropdown="{mode:\'click\'}">' +
-					'<div class="code__icon uk-button-dropdown" data-uk-tooltip="{pos:\'right\'}" title="Questions asked">0</div>' +
+					'<div class="code__icon uk-button-dropdown" data-uk-tooltip="{pos:\'right\'}" title="Questions asked">' +
+					'<span id="question-line-' + i + '">0</span>' +
+					'</div>' +
 					'<div class="dropdown__box">' + 
 					'<form><textarea type="text" maxlength="140" placeholder="Questions?"></textarea></form>' +
 					'</div></div></li>';
@@ -127,6 +134,21 @@
 				line_li.append('<div class="code__inline_comment" style="display: inline; right: 30px; position: absolute">' + comments[i] + '</div>');
 			}
 		});
+		setInterval(function() {
+			$.getJSON('/questions?username=${username}&repo=${repo}&lesson_id=2').then(function(response) {
+				console.log(response);
+				$('#questions-ul').html('');
+				for (var i = 0; i < response.length; i++) {
+					if (response[i] == null) {
+						continue;
+					}
+					$('#question-line-' + i).html(response[i].length);
+					for (var j = 0; j < response[i].length; j++) {
+						$('#questions-ul').append('<li class="question"><span class="question__number">' + i + '</span>' + response[i][j] + '</li>');
+					}
+				}
+			});
+		}, 5000);
 
 </script>
 </body>

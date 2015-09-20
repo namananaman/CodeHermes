@@ -32,6 +32,10 @@
   String results = "";
   int numresults = 0;
   String statement = null;
+  String className = "myClass";
+  String fileName = "myFile";
+  int lineNumber = 25;
+  String question = "This is not a question";
 
   try {
     // Create connection to RDS instance
@@ -39,13 +43,11 @@
     
     // Create a table and write two rows
     setupStatement = conn.createStatement();
-    String createTable = "CREATE TABLE Beanstalk (Resource char(50));";
-    String insertRow1 = "INSERT INTO Beanstalk (Resource) VALUES ('EC2 Instance');";
-    String insertRow2 = "INSERT INTO Beanstalk (Resource) VALUES ('RDS Instance');";
+    setupStatement.addBatch("INSERT INTO questions "
+			+ "(class_name, file_name, line_number, question) "
+			+ "VALUES " + "('" + className + "','" + fileName + "',"
+			+ lineNumber + ",'" + question + "');");
     
-    setupStatement.addBatch(createTable);
-    setupStatement.addBatch(insertRow1);
-    setupStatement.addBatch(insertRow2);
     setupStatement.executeBatch();
     setupStatement.close();
     
@@ -63,12 +65,13 @@
     conn = DriverManager.getConnection(jdbcUrl);
     
     readStatement = conn.createStatement();
-    resultSet = readStatement.executeQuery("SELECT Resource FROM Beanstalk;");
+    resultSet = readStatement.executeQuery("SELECT question FROM questions "
+			+ "WHERE class_name = '" + className + "'"
+			+ "AND file_name = '" + fileName + "'"
+			+ "ORDER BY id;");
 
     resultSet.first();
-    results = resultSet.getString("Resource");
-    resultSet.next();
-    results += ", " + resultSet.getString("Resource");
+    results = resultSet.getString("question");
     
     resultSet.close();
     readStatement.close();
@@ -83,6 +86,8 @@
        System.out.println("Closing the connection.");
       if (conn != null) try { conn.close(); } catch (SQLException ignore) {}
   }
+  
+  String completeResult = jdbcUrl + " " + results;
 %>
 
 <html>
@@ -93,6 +98,6 @@
 	<body>
 		<c:url value="/show" var="messageUrl" />
 		<a href="${messageUrl}">Click here to enter</a>
-		<p>Established connection to RDS. Read first two rows: </p> 
+		<p>Established connection to RDS. Read first two rows: </p>  <%= completeResult %>
 	</body>
 </html>

@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+
 public class AWSInterface {
 	private String nameOfDatabase;
 	private static String jdbcUrl = null;
@@ -16,10 +18,10 @@ public class AWSInterface {
 		this.nameOfDatabase = nameOfDatabase;
 	}
 
-	public HashMap<Integer, ArrayList<String>> getQuestionsAtLine(String className,
+	public JSONArray getQuestionsAtLine(String className,
 			String fileName) {
-		HashMap<Integer, ArrayList<String>> result = new HashMap<Integer, ArrayList<String>>();
 		
+		JSONArray result;
 		if (jdbcUrl == null) {
 			setJdbcUrl();
 		}
@@ -41,24 +43,25 @@ public class AWSInterface {
 					.executeQuery("SELECT question, line_number FROM questions "
 							+ "WHERE class_name = '" + className + "'"
 							+ "AND file_name = '" + fileName + "'"
-							+ "ORDER BY id;");
+							+ "ORDER BY id DESC;");
 			if (!resultSet.first())
-				return result;
-			ArrayList<String> questions = new ArrayList<String>();
-			questions.add(resultSet.getString("question"));
+				return new JSONArray();
+			result = new JSONArray();
+			JSONArray questions = new JSONArray();
+			questions.put(resultSet.getString("question"));
 			Integer lineNumber = Integer.valueOf(resultSet.getInt("line_number"));
 			result.put(lineNumber, questions);
 			
 			while(resultSet.next()) {
 				lineNumber = Integer.valueOf(resultSet.getInt("line_number"));
 				String question = resultSet.getString("question");
-				
-				if(result.containsKey(lineNumber)) {
-					result.get(lineNumber).add(question);
+				questions = result.getJSONArray(lineNumber);
+				if(questions != null) {
+					questions.put(question);
 				}
 				else {
-					questions = new ArrayList<String>();
-					questions.add(question);
+					questions = new JSONArray();
+					questions.put(question);
 					result.put(lineNumber, questions);
 				}
 			}
