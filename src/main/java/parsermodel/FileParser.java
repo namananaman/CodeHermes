@@ -90,7 +90,7 @@ public class FileParser {
 		
 		while(indexOfComment != (-1)) {
 			indexAfterComment = indexOfComment + INLINE_COMMENT_TOKEN.length();
-			indexOfNewLine = file.substring(indexOfComment).indexOf("\n");
+			indexOfNewLine = file.substring(indexOfComment).indexOf("\n") + indexOfComment;
 			comments.add(file.substring(indexAfterComment, indexOfNewLine));
 			indices.add(Integer.valueOf(indexOfComment));
 			indexOfComment = file.indexOf(INLINE_COMMENT_TOKEN);

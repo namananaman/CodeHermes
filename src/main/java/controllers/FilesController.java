@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import parsermodel.FileParser;
+
 @Controller
 public class FilesController {
 	@RequestMapping("/files")
@@ -37,14 +39,13 @@ public class FilesController {
 	}
 
 	@RequestMapping("/lesson")
-	public ModelAndView LessonView(@RequestParam String file_url) throws IOException {
+	public String LessonView(@RequestParam String file_url) throws IOException {
 		HttpClient http = HttpClients.createDefault();
 		HttpGet get = new HttpGet(file_url);
 		get.setHeader("Accept", "application/vnd.github.V3.raw");
 		HttpResponse response = http.execute(get);
 		String responseText = EntityUtils.toString(response.getEntity());
-		ModelAndView mav = new ModelAndView("lesson");
-		mav.addObject("file", responseText);
-		return mav;
+		JSONObject result = new JSONObject(FileParser.parseFile(responseText));
+		return result.toString();
 	}
 }
