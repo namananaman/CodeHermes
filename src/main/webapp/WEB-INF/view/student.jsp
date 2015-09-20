@@ -22,22 +22,14 @@
 				<ul id="directory-list" class="list">
 				</ul>
 			</div>
-			<div class="sidebar__bottom">
-				<div class="list__head">Functions</div>
-				<ul class="list--line">
-					<li class="list__item droid-sans"><a href="">foo() {...}</a></li>
-				</ul>
-			</div>
 		</div>
 		<div class="dashboard">
 			<div class="dashboard__code">
 				<div class="dashboard__actionbar" data-uk-sticky>
 					<a href="index.html"> <img class="actionbar__logo" src="/resources/img/logo.svg" alt="Code Hermes" />
-					</a> <strong>Lesson 3 <i class="uk-icon-angle-right"></i> filename.py
-					</strong>
+					</a> <strong><span id="current-file"></span></strong>
 					<div class="actionbar__input">
-						Share this file: <input type="text" value="http://codehermes.co/A8DJ24" data-share-link />
-						<!-- <div class="actionbar__icon" data-uk-tooltip title="Copy to clipboard"><i class="uk-icon-clipboard"></i></div> -->
+						Share this file: <input type="text" value="${url}" data-share-link />
 					</div>
 				</div>
 				<ul id="code-list">
@@ -60,7 +52,7 @@
 		for (var i = 0; i < response.length; i++) {
 			var parts = response[i].path.split('/');
 			if (parts.length === 2) {
-				if (tree[parts[0]] === undefined) {
+				if (tree[parts[0]] === undefined) { 
 					tree[parts[0]] = [{path: parts[1], url: response[i].url}];
 				} else {
 					tree[parts[0]].push({path: parts[1], url: response[i].url});
@@ -78,7 +70,7 @@
 					readme_url = tree[tree_keys[i]].url;
 				}
 			} else {
-				var dir_str = '<li class="list__caret"><a href="' + i + '"> <i class="uk-icon-caret-right"></i>'
+				var dir_str = '<li class="list__caret list__dir"><a href="' + i + '"> <i class="uk-icon-caret-right"></i>'
 				+ tree_keys[i] + '<ul class="list">';
 				var dir_contents = tree[tree_keys[i]];
 				for (var j = 0; j < dir_contents.length; j++) {
@@ -93,8 +85,10 @@
 		var file_url;
 		if (lesson_id === -1) { //this means that there's no specified lesson
 			file_url = readme_url;
+			$('#current-file').html("readme.md");
 		} else {
 			file_url = response[lesson_id].url;
+			$('#current-file').html(response[lesson_id].path);
 		}
 		$.getJSON('/lesson?file_url=' + file_url).then(function(response) {
 			var code_list = $('#code-list');
@@ -105,12 +99,19 @@
 				append_str += '<li id="code-line-' + i + '">' +
 					'<div class="code__line_number">' + 
 					i + '</div> <pre class="code__line">' +
-					'<code class="language-java">' + file_lines[i] + '</code></pre>' +
-					'<div class="dropdown" data-uk-dropdown="{mode:\'click\'}">' +
-					'<div class="code__icon uk-button-dropdown" data-uk-tooltip="{pos:\'right\'}" title="Questions asked">0</div>' +
-					'<div class="dropdown__box">' + 
-					'<form><textarea type="text" maxlength="140" placeholder="Questions?"></textarea></form>' +
-					'</div></div></li>';
+					'<code class="language-java">' + file_lines[i] + '<div style="float: right;position: absolute;right: 0;" data-uk-dropdown="{mode:\'click\'}">' +
+			        '<div class="code__icon uk-button-dropdown" data-uk-tooltip="{pos:\'right\'}" title="Ask a question!"><i class="uk-icon-plus"></i></div>'+
+			        '<div class="dropdown__box">' +
+			          '<form method="post">' +
+			           '<input type="hidden" id="line_number" value="' + i + '">' +
+			           '<input type="hidden" id="lessonID" value="' + ${ lesson_id } + '">' +
+			           '<input type="hidden" id="username" value="'+ ${ username } + '">' +
+			           '<input type="hidden" id="repo" value="'+ ${ repo } + '">' +
+			            '<textarea type="text" maxlength="140" row="4" placeholder="Ask Your Question!" id="question"></textarea>' +
+			            '<input type="submit" />' +
+			          '</form>' +
+			        '</div>' +
+			      '</div></li>';
 			}
 			code_list.append(append_str);
 			

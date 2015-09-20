@@ -49,7 +49,7 @@ public class StudentController {
 				javaFiles.put(file);
 			}
 		}
-		ModelAndView mav = new ModelAndView("instructor");
+		ModelAndView mav = new ModelAndView("student");
 		mav.addObject("files", javaFiles);
 		mav.addObject("lesson_id", lessonID);
 		return mav;
