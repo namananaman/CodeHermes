@@ -22,22 +22,14 @@
 				<ul id="directory-list" class="list">
 				</ul>
 			</div>
-			<div class="sidebar__bottom">
-				<div class="list__head">Functions</div>
-				<ul class="list--line">
-					<li class="list__item droid-sans"><a href="">foo() {...}</a></li>
-				</ul>
-			</div>
 		</div>
 		<div class="dashboard">
 			<div class="dashboard__code">
 				<div class="dashboard__actionbar" data-uk-sticky>
 					<a href="index.html"> <img class="actionbar__logo" src="/resources/img/logo.svg" alt="Code Hermes" />
-					</a> <strong>Lesson 3 <i class="uk-icon-angle-right"></i> filename.py
-					</strong>
+					</a> <strong><span id="current-file"></span></strong>
 					<div class="actionbar__input">
-						Share this file: <input type="text" value="http://codehermes.co/A8DJ24" data-share-link />
-						<!-- <div class="actionbar__icon" data-uk-tooltip title="Copy to clipboard"><i class="uk-icon-clipboard"></i></div> -->
+						Share this file: <input type="text" value="${url}" data-share-link />
 					</div>
 				</div>
 				<ul id="code-list">
@@ -78,7 +70,7 @@
 					readme_url = tree[tree_keys[i]].url;
 				}
 			} else {
-				var dir_str = '<li class="list__caret"><a href="' + i + '"> <i class="uk-icon-caret-right"></i>'
+				var dir_str = '<li class="list__caret list__dir"><a href="' + i + '"> <i class="uk-icon-caret-right"></i>'
 				+ tree_keys[i] + '<ul class="list">';
 				var dir_contents = tree[tree_keys[i]];
 				for (var j = 0; j < dir_contents.length; j++) {
@@ -93,8 +85,10 @@
 		var file_url;
 		if (lesson_id === -1) { //this means that there's no specified lesson
 			file_url = readme_url;
+			$('#current-file').html("readme.md");
 		} else {
 			file_url = response[lesson_id].url;
+			$('#current-file').html(response[lesson_id].path);
 		}
 		$.getJSON('/lesson?file_url=' + file_url).then(function(response) {
 			var code_list = $('#code-list');

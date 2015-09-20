@@ -38,7 +38,7 @@ public class AWSInterface {
 		ResultSet resultSet;
 		try {
 			resultSet = readStatement
-					.executeQuery("SELECT question FROM questions "
+					.executeQuery("SELECT question, line_number FROM questions "
 							+ "WHERE class_name = '" + className + "'"
 							+ "AND file_name = '" + fileName + "'"
 							+ "ORDER BY id;");
