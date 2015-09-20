@@ -25,8 +25,11 @@ public class FileParser {
 		ArrayList<Integer> endMatchings = getMatchings(END_COMMENT_TOKEN, file,
 				false);
 
-		if (startMatchings.size() == 0)
+		if (startMatchings.size() == 0) {
+			result.setNewFile(file);
 			return result;
+		}
+			
 
 		ArrayList<Integer> lineNumbers = getMatchings("\n", file, true);
 
