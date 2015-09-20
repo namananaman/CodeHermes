@@ -150,7 +150,7 @@ public class FileParser {
 				currentIndex = lineNumberIndices.get(currentLine).intValue();
 				currentLine++;
 			}
-			result.add(Integer.valueOf(currentLine));
+			result.add(Integer.valueOf(currentLine - 1));
 		}
 		return result;
 	}
