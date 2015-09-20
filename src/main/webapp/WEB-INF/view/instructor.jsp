@@ -144,7 +144,7 @@
 					}
 					$('#question-line-' + i).html(response[i].length);
 					for (var j = 0; j < response[i].length; j++) {
-						$('#questions-ul').append('<li class="question"><span class="question__number">' + i + '</span>' + response[i][j] + '</li>');
+						$('#questions-ul').append('<li class="question" data-line-num=' + i + '><span class="question__number">' + i + '</span>' + response[i][j] + '</li>');
 					}
 				}
 			});

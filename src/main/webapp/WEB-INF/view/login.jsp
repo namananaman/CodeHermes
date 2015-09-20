@@ -37,7 +37,6 @@
 					</div>
 				</c:otherwise>
 			</c:choose>
-			${response}
 		</div>
 	</div>
 	<script src="/resources/js/lib.min.js"></script>

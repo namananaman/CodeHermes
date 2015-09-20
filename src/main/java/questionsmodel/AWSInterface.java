@@ -18,9 +18,8 @@ public class AWSInterface {
 		this.nameOfDatabase = nameOfDatabase;
 	}
 
-	public JSONArray getQuestionsAtLine(String className,
-			String fileName) {
-		
+	public JSONArray getQuestionsAtLine(String className, String fileName) {
+
 		JSONArray result;
 		if (jdbcUrl == null) {
 			setJdbcUrl();
@@ -41,33 +40,39 @@ public class AWSInterface {
 		try {
 			resultSet = readStatement
 					.executeQuery("SELECT question, line_number FROM questions "
-							+ "WHERE class_name = '" + className + "'"
-							+ "AND file_name = '" + fileName + "'"
+							+ "WHERE class_name = '"
+							+ className
+							+ "'"
+							+ "AND file_name = '"
+							+ fileName
+							+ "'"
 							+ "ORDER BY id DESC;");
 			if (!resultSet.first())
 				return new JSONArray();
 			result = new JSONArray();
 			JSONArray questions = new JSONArray();
 			questions.put(resultSet.getString("question"));
-			Integer lineNumber = Integer.valueOf(resultSet.getInt("line_number"));
+			Integer lineNumber = Integer.valueOf(resultSet
+					.getInt("line_number"));
 			result.put(lineNumber, questions);
-			
-			while(resultSet.next()) {
+
+			while (resultSet.next()) {
 				lineNumber = Integer.valueOf(resultSet.getInt("line_number"));
 				String question = resultSet.getString("question");
-				questions = result.getJSONArray(lineNumber);
-				if(questions != null) {
+				try {
+					questions = result.getJSONArray(lineNumber);
 					questions.put(question);
-				}
-				else {
+
+				} catch (Exception e) {
 					questions = new JSONArray();
 					questions.put(question);
 					result.put(lineNumber, questions);
 				}
+
 			}
 			resultSet.close();
-		    readStatement.close();
-		    conn.close();
+			readStatement.close();
+			conn.close();
 
 		} catch (SQLException e) {
 			throw new RuntimeException("Cannot execute query!", e);
@@ -96,10 +101,12 @@ public class AWSInterface {
 		}
 
 		try {
-			writeStatement.addBatch("INSERT INTO questions "
+			String query = "INSERT INTO questions "
 					+ "(class_name, file_name, line_number, question) "
 					+ "VALUES " + "('" + className + "','" + fileName + "',"
-					+ lineNumber + ",'" + question + "');");
+					+ lineNumber + ",'" + question + "');";
+			System.out.println(query);
+			writeStatement.addBatch(query);
 			writeStatement.executeBatch();
 			writeStatement.close();
 			conn.close();
