@@ -21,7 +21,6 @@
 				<br />
 				<ul id="directory-list" class="list">
 					<script type="text/javascript">
-						//$.getJSON('/files?username=${username}&repo=${repo}').then(function(response) {
 							response = ${files};
 							var dirs = $('#directory-list');
 							var tree = {};
@@ -31,18 +30,22 @@
 									continue;
 								} else if (parts.length === 2) {
 									if (tree[parts[0]] === undefined) {
-										tree[parts[0]] = [parts[1]];
+										tree[parts[0]] = [{path: parts[1], url: response[i].url}];
 									} else {
-										tree[parts[0]].push(parts[1]);
+										tree[parts[0]].push({path: parts[1], url: response[i].url});
 									}
 								} else {
-									tree[parts[0]] = null;
+									tree[parts[0]] = {path: parts[0], url: response[i].url};
 								}
 							}
 							var tree_keys = Object.keys(tree);
+							var readme_url;
 							for (var i = 0; i < tree_keys.length; i++) {
-								if (tree[tree_keys[i]] === null) { //we have a file
+								if (!(tree[tree_keys[i]] instanceof Array)) { //we have a file
 									dirs.append('<li class="list__caret"><a href="">' + tree_keys[i] + '</a></li>')
+									if (tree_keys[i].toLowerCase() === 'readme.md') {
+										readme_url = tree[tree_keys[i]].url;
+									}
 								} else {
 									var dir_str = '<li class="list__caret"><a href=""> <i class="uk-icon-caret-right"></i>'
 									+ tree_keys[i] + '<ul class="list">';
@@ -55,14 +58,19 @@
 								}
 							}	
 							//now time to get the file specified in the url
-							if (${lesson_id} === -1) { //this means that there's no specified lesson
-								
+							var lesson_id = ${lesson_id};
+							if (lesson_id === -1) { //this means that there's no specified lesson
+								$.getJSON('/lesson?file_url=' + readme_url).then(function(response) {
+									console.log(response);
+								});
+							} else {
+								$.getJSON('/lesson?file_url=' + tree[tree_keys[lesson_id]].url).then(function(response) {
+									console.log(response);									
+								});
 							}
-							
-				//		});
 						
 					
-					</script>
+					</script>	
 					<!-- <li class="list__caret"><a href="">README.md</a></li>
 					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 1</a></li>
 					<li class="list__caret"><a href=""><i class="uk-icon-caret-right"></i> Lesson 2</a></li>
