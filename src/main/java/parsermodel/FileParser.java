@@ -92,21 +92,24 @@ public class FileParser {
 		ArrayList<String> comments = new ArrayList<String>();
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 		ArrayList<Integer> newLineIndices = getMatchings("\n", file, true);
-		int indexAfterComment = 0, indexOfNewLine;
+		String newFile = "";
+		int prevIndex = 0;
+		int indexAfterComment = 0, indexOfNewLine = 0;
 		int indexOfComment = file.indexOf(INLINE_COMMENT_TOKEN);
-
+		
 		while (indexOfComment != (-1)) {
 			indexOfComment += indexAfterComment;
+			newFile += file.substring(indexOfNewLine, indexOfComment);
 			indexAfterComment = indexOfComment + INLINE_COMMENT_TOKEN.length();
 			indexOfNewLine = file.substring(indexOfComment).indexOf("\n")
 					+ indexOfComment;
-			System.out.println(indexOfComment+" " + indexAfterComment+" "+indexOfNewLine);
 			comments.add(file.substring(indexAfterComment, indexOfNewLine));
 			indices.add(Integer.valueOf(indexOfComment));
 			indexOfComment = file.substring(indexAfterComment).indexOf(
 					INLINE_COMMENT_TOKEN);
 		}
-
+		newFile += file.substring(indexOfNewLine);
+		currentResult.setNewFile(newFile);
 		ArrayList<Integer> lineNumbers = getCorrespondingLineNumbers(indices,
 				newLineIndices);
 		currentResult.setInlineComments(comments);
